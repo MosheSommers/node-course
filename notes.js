@@ -1,19 +1,48 @@
 console.log('Starting notes.js');
-module.exports.age = 30;
+const fs = require('fs');
 
 var addnote = (title, body) => {
-    console.log('Adding note', title, body);
+    var notes = [];
+   
+    var note = {
+        title,
+        body
+    }
+    try{
+        var file = fs.readFileSync('notes.json');
+        notes = JSON.parse(file);
+    } catch(e){}
+    
+    notes.push(note);
+    fs.writeFileSync('notes.json', JSON.stringify(notes));
 };
 
 var getAll = () => {
-    console.log('Getting all notes');
+    var fileContents = JSON.parse(fs.readFileSync('notes.json'));
+    fileContents.forEach(element => {
+        console.log(element.title);
+    });
 };
 
 var read = (title) => {
-    console.log(`Reading from ${title}`);
+    var notes = JSON.parse(fs.readFileSync('notes.json'));
+    notes.forEach(element => {
+        if(element.title === title){
+            console.log(`Reading from ${title} , ${element.body}`);
+        }
+    });
+    
 };
 
 var remove = (title) => {
+    var notes = JSON.parse(fs.readFileSync('notes.json'));
+    notes.forEach(function(element,index ) {
+        if(element.title === title){
+            notes.splice(index);
+        }
+    });
+    notesString = JSON.stringify(notes);
+    fs.writeFileSync('notes.json', notesString);
     console.log(`Removing ${title} from notes`);
 };
 
